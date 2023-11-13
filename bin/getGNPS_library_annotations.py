@@ -9,9 +9,28 @@ from collections import defaultdict
 import argparse
 import urllib.parse
 from tqdm import tqdm
+from functools import lru_cache 
+
+@lru_cache
+def _get_gnps_library_spectrum(spectrum_id):
+    # TODO: We can better sanity check the spectrum_id itself
+
+    try:
+        gnps_library_spectrum = ming_gnps_library.get_library_spectrum(spectrum_id)
+
+        #Making sure not an error
+        gnps_library_spectrum["annotations"][0]["Compound_Name"]
+    except KeyboardInterrupt:
+        raise
+    except:
+        gnps_library_spectrum = {}
+        pass
+
+    return gnps_library_spectrum
+    
+
 
 def enrich_output(input_filename, output_filename, topk=None):
-    spectrum_id_cache = {}
     # molecule_explorer_df = pd.DataFrame(ming_gnps_library.get_molecule_explorer_dataset_data())
 
     if not os.path.exists(input_filename):
@@ -51,66 +70,73 @@ def enrich_output(input_filename, output_filename, topk=None):
         SharedPeaks = result_obj["LibSearchSharedPeaks"]
         MassDiff = result_obj["ParentMassDiff"]
 
-        print(spectrum_id)
-        gnps_library_spectrum = None
-        try:
-            gnps_library_spectrum = None
-            if spectrum_id in spectrum_id_cache:
-                gnps_library_spectrum = spectrum_id_cache[spectrum_id]
-            else:
-                gnps_library_spectrum = ming_gnps_library.get_library_spectrum(spectrum_id)
-                spectrum_id_cache[spectrum_id] = gnps_library_spectrum
-
-            #Making sure not an error
-            gnps_library_spectrum["annotations"][0]["Compound_Name"]
-        except KeyboardInterrupt:
-            raise
-        except:
-            continue
+        gnps_library_spectrum = _get_gnps_library_spectrum(spectrum_id)
 
         # TODO: if there is an error in getting the IDs, we should just try to pass as much through as possible
 
         output_result_dict = {}
 
         output_result_dict["SpectrumID"] = (spectrum_id)
-        output_result_dict["Compound_Name"] = (gnps_library_spectrum["annotations"][0]["Compound_Name"].replace("\t", ""))
-        output_result_dict["Ion_Source"] = (gnps_library_spectrum["annotations"][0]["Ion_Source"].replace("\t", ""))
-        output_result_dict["Instrument"] = (gnps_library_spectrum["annotations"][0]["Instrument"].replace("\t", ""))
-        output_result_dict["Compound_Source"] = (gnps_library_spectrum["annotations"][0]["Compound_Source"].replace("\t", ""))
-        output_result_dict["PI"] = (gnps_library_spectrum["annotations"][0]["PI"].replace("\t", ""))
-        output_result_dict["Data_Collector"] = (gnps_library_spectrum["annotations"][0]["Data_Collector"].replace("\t", ""))
-        output_result_dict["Adduct"] = (gnps_library_spectrum["annotations"][0]["Adduct"].replace("\t", ""))
-        output_result_dict["Precursor_MZ"] = (gnps_library_spectrum["annotations"][0]["Precursor_MZ"].replace("\t", ""))
-        output_result_dict["ExactMass"] = (gnps_library_spectrum["annotations"][0]["ExactMass"].replace("\t", ""))
-        output_result_dict["Charge"] = (gnps_library_spectrum["annotations"][0]["Charge"].replace("\t", ""))
-        output_result_dict["CAS_Number"] = (gnps_library_spectrum["annotations"][0]["CAS_Number"].replace("\t", ""))
-        output_result_dict["Pubmed_ID"] = (gnps_library_spectrum["annotations"][0]["Pubmed_ID"].replace("\t", ""))
-        output_result_dict["Smiles"] = (gnps_library_spectrum["annotations"][0]["Smiles"].replace("\t", ""))
-        output_result_dict["INCHI"] = (gnps_library_spectrum["annotations"][0]["INCHI"].replace("\t", ""))
-        output_result_dict["INCHI_AUX"] = (gnps_library_spectrum["annotations"][0]["INCHI_AUX"].replace("\t", ""))
-        output_result_dict["Library_Class"] = (gnps_library_spectrum["annotations"][0]["Library_Class"].replace("\t", ""))
-        output_result_dict["IonMode"] = (gnps_library_spectrum["annotations"][0]["Ion_Mode"].replace("\t", ""))
 
-        if gnps_library_spectrum["annotations"][0]["Library_Class"] == "1":
-            output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-GOLD")
-            output_result_dict["LibraryQualityString"] = ("Gold")
-        elif gnps_library_spectrum["annotations"][0]["Library_Class"] == "2":
-            output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-SILVER")
-            output_result_dict["LibraryQualityString"] = ("Silver")
-        elif gnps_library_spectrum["annotations"][0]["Library_Class"] == "3":
-            output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-BRONZE")
-            output_result_dict["LibraryQualityString"] = ("Bronze")
-        elif gnps_library_spectrum["annotations"][0]["Library_Class"] == "4":
-            output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-BRONZE")
-            output_result_dict["LibraryQualityString"] = ("Insilico")
-        elif gnps_library_spectrum["annotations"][0]["Library_Class"] == "5":
-            output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-BRONZE")
-            output_result_dict["LibraryQualityString"] = ("Insilico")
-        elif gnps_library_spectrum["annotations"][0]["Library_Class"] == "10":
-            output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-BRONZE")
-            output_result_dict["LibraryQualityString"] = ("Challenge")
-        else:
-            print("Invalid Library Class", gnps_library_spectrum["annotations"][0]["Library_Class"])
+        try:
+            output_result_dict["Compound_Name"] = (gnps_library_spectrum["annotations"][0]["Compound_Name"].replace("\t", ""))
+            output_result_dict["Ion_Source"] = (gnps_library_spectrum["annotations"][0]["Ion_Source"].replace("\t", ""))
+            output_result_dict["Instrument"] = (gnps_library_spectrum["annotations"][0]["Instrument"].replace("\t", ""))
+            output_result_dict["Compound_Source"] = (gnps_library_spectrum["annotations"][0]["Compound_Source"].replace("\t", ""))
+            output_result_dict["PI"] = (gnps_library_spectrum["annotations"][0]["PI"].replace("\t", ""))
+            output_result_dict["Data_Collector"] = (gnps_library_spectrum["annotations"][0]["Data_Collector"].replace("\t", ""))
+            output_result_dict["Adduct"] = (gnps_library_spectrum["annotations"][0]["Adduct"].replace("\t", ""))
+            output_result_dict["Precursor_MZ"] = (gnps_library_spectrum["annotations"][0]["Precursor_MZ"].replace("\t", ""))
+            output_result_dict["ExactMass"] = (gnps_library_spectrum["annotations"][0]["ExactMass"].replace("\t", ""))
+            output_result_dict["Charge"] = (gnps_library_spectrum["annotations"][0]["Charge"].replace("\t", ""))
+            output_result_dict["CAS_Number"] = (gnps_library_spectrum["annotations"][0]["CAS_Number"].replace("\t", ""))
+            output_result_dict["Pubmed_ID"] = (gnps_library_spectrum["annotations"][0]["Pubmed_ID"].replace("\t", ""))
+            output_result_dict["Smiles"] = (gnps_library_spectrum["annotations"][0]["Smiles"].replace("\t", ""))
+            output_result_dict["INCHI"] = (gnps_library_spectrum["annotations"][0]["INCHI"].replace("\t", ""))
+            output_result_dict["INCHI_AUX"] = (gnps_library_spectrum["annotations"][0]["INCHI_AUX"].replace("\t", ""))
+            output_result_dict["Library_Class"] = (gnps_library_spectrum["annotations"][0]["Library_Class"].replace("\t", ""))
+            output_result_dict["IonMode"] = (gnps_library_spectrum["annotations"][0]["Ion_Mode"].replace("\t", ""))
+
+            if gnps_library_spectrum["annotations"][0]["Library_Class"] == "1":
+                output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-GOLD")
+                output_result_dict["LibraryQualityString"] = ("Gold")
+            elif gnps_library_spectrum["annotations"][0]["Library_Class"] == "2":
+                output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-SILVER")
+                output_result_dict["LibraryQualityString"] = ("Silver")
+            elif gnps_library_spectrum["annotations"][0]["Library_Class"] == "3":
+                output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-BRONZE")
+                output_result_dict["LibraryQualityString"] = ("Bronze")
+            elif gnps_library_spectrum["annotations"][0]["Library_Class"] == "4":
+                output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-BRONZE")
+                output_result_dict["LibraryQualityString"] = ("Insilico")
+            elif gnps_library_spectrum["annotations"][0]["Library_Class"] == "5":
+                output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-BRONZE")
+                output_result_dict["LibraryQualityString"] = ("Insilico")
+            elif gnps_library_spectrum["annotations"][0]["Library_Class"] == "10":
+                output_result_dict["UpdateWorkflowName"] = ("UPDATE-SINGLE-ANNOTATED-BRONZE")
+                output_result_dict["LibraryQualityString"] = ("Challenge")
+            else:
+                print("Invalid Library Class", gnps_library_spectrum["annotations"][0]["Library_Class"])
+
+        except:
+            # Things didn't work so we should fallback on the input
+            output_result_dict["Compound_Name"] = ""
+            output_result_dict["Ion_Source"] = ""
+            output_result_dict["Instrument"] = ""
+            output_result_dict["Compound_Source"] = ""
+            output_result_dict["PI"] = ""
+            output_result_dict["Data_Collector"] = ""
+            output_result_dict["Adduct"] = ""
+            output_result_dict["Precursor_MZ"] = ""
+            output_result_dict["ExactMass"] = ""
+            output_result_dict["Charge"] = ""
+            output_result_dict["CAS_Number"] = ""
+            output_result_dict["Pubmed_ID"] = ""
+            output_result_dict["Smiles"] = ""
+            output_result_dict["INCHI"] = ""
+            output_result_dict["INCHI_AUX"] = ""
+            output_result_dict["Library_Class"] = ""
+            output_result_dict["IonMode"] = ""
 
         output_result_dict["#Scan#"] = (scan)
         output_result_dict["SpectrumFile"] = (filename)
@@ -136,15 +162,6 @@ def enrich_output(input_filename, output_filename, topk=None):
 
         output_result_dict["tags"] = (tag_string)
 
-        #Getting molecule explorer information
-        # compound_name = gnps_library_spectrum["annotations"][0]["Compound_Name"].replace("\t", "")
-        # compound_filtered_df = molecule_explorer_df[molecule_explorer_df["compound_name"] == compound_name]
-        # if len(compound_filtered_df) == 1:
-        #     output_result_dict["MoleculeExplorerDatasets"] = (compound_filtered_df.to_dict(orient="records")[0]["number_datasets"])
-        #     output_result_dict["MoleculeExplorerFiles"] = (compound_filtered_df.to_dict(orient="records")[0]["number_files"])
-        # else:
-        #     output_result_dict["MoleculeExplorerDatasets"] = (0)
-        #     output_result_dict["MoleculeExplorerFiles"] = (0)
         
         # Calculating inchi
         if len(output_result_dict["Smiles"]) > 5 and len(output_result_dict["INCHI"]) < 5:
