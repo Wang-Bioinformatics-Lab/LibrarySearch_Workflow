@@ -44,6 +44,8 @@ parameterlist:
           display: gnps_new
         - value: blink
           display: blink
+        - value: gnps_indexed
+          display: gnps_indexed
 
     - displayname: Precursor Ion Tolerance
       paramtype: text
