@@ -5,7 +5,7 @@ params.inputlibraries = "data/libraries"
 params.inputspectra = "data/spectra"
 
 // Parameters
-params.searchtool = "gnps" // blink, gnps, gnps_new
+params.searchtool = "gnps" // blink, gnps, gnps_new, gnps_indexed
 
 params.topk = 1
 
@@ -16,6 +16,9 @@ params.library_min_similarity = 0.7
 params.library_min_matched_peaks = 6
 
 params.merge_batch_size = 1000 //Not a UI parameter
+
+// Parameters for Interacting with GNPS Libraries
+params.forceoffline = "No"
 
 // Filtering structures
 params.filtertostructures = "0" // 1 means we filter to only hits with structures
@@ -121,7 +124,7 @@ workflow Main{
     }
 
     annotation_results_ch = librarygetGNPSAnnotations(merged_results, library_summary_merged_ch,
-     input_map.topk, input_map.filtertostructures)
+     input_map.topk, input_map.filtertostructures, input_map.forceoffline)
 
     // Getting another output that is only the top 1
     filtertop1Annotations(annotation_results_ch)
@@ -141,6 +144,7 @@ workflow {
         library_min_similarity: params.library_min_similarity,
         library_min_matched_peaks: params.library_min_matched_peaks,
         merge_batch_size: params.merge_batch_size,
+        forceoffline: params.forceoffline,
         filtertostructures: params.filtertostructures,
         filter_precursor: params.filter_precursor,
         filter_window: params.filter_window,
