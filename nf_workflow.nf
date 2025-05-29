@@ -41,7 +41,7 @@ TOOL_FOLDER = "$moduleDir/bin"
 MODULES_FOLDER = "$TOOL_FOLDER/NextflowModules"
 params.publishDir = "./nf_output"
 
-include {summaryLibrary; searchDataGNPS; searchDataGNPSNew; searchDataBlink; 
+include {summaryLibrary; searchDataGNPS; searchDataGNPSNew; searchDataGNPSIndexed; searchDataBlink; 
  mergeResults; librarygetGNPSAnnotations; filtertop1Annotations;
   formatBlinkResults; chunkResults} from "$MODULES_FOLDER/nf_library_search_modules.nf" addParams(publishDir: params.publishDir)
 
@@ -78,7 +78,7 @@ workflow Main{
     // Merging all these tsv files from library_summary_ch within nextflow
     library_summary_merged_ch = library_summary_ch.collectFile(name: "${input_map.publishDir}/library_summary.tsv", keepHeader: true)
     
-    if(input_map.searchtool == "gnps"){
+    if(input_map.searchtool == "gnps" || input_map.searchtool == "gnps_indexed"){
         // Perform cartesian product producing all combinations of library, spectra
         inputs = libraries_ch.combine(spectra)
 
@@ -86,7 +86,14 @@ workflow Main{
         // Must add the prepend manually since relative does not include the glob.
         inputs = inputs.map { it -> [it[0], file(input_map.inputspectra + '/' + it[1]), it[1].toString().replaceAll("/","_"), it[1]] }
 
-        (search_results) = searchDataGNPS(inputs, input_map.pm_tolerance, input_map.fragment_tolerance, input_map.topk, input_map.library_min_similarity, input_map.library_min_matched_peaks, input_map.analog_search)
+        if (input_map.searchtool == "gnps_indexed") {
+            // If the search tool is gnps_indexed, we need to use the indexed search
+            search_results = searchDataGNPSIndexed(inputs, input_map.pm_tolerance, input_map.fragment_tolerance, input_map.topk, input_map.library_min_similarity, input_map.library_min_matched_peaks, input_map.analog_search)
+        }
+        else {
+            // Otherwise, we use the regular GNPS search
+            search_results = searchDataGNPS(inputs, input_map.pm_tolerance, input_map.fragment_tolerance, input_map.topk, input_map.library_min_similarity, input_map.library_min_matched_peaks, input_map.analog_search)
+        }
 
         chunked_results = chunkResults(search_results.buffer(size: input_map.merge_batch_size, remainder: true), input_map.topk)
        
