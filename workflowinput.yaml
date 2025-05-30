@@ -215,4 +215,15 @@ parameterlist:
           - key: searchtool
             value: blink
 
+    - displayname: forceoffline
+      paramtype: select
+      nf_paramname: forceoffline
+      formvalue: No
+      options:
+        - value: Yes
+          display: Yes
+        - value: No
+          display: No
+    
+
     

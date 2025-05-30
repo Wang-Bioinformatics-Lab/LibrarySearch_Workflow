@@ -18,7 +18,7 @@ params.library_min_matched_peaks = 6
 params.merge_batch_size = 1000 //Not a UI parameter
 
 // Parameters for Interacting with GNPS Libraries
-params.forceoffline = "No"
+params.forceoffline = "No" // Yes or No
 
 // Filtering structures
 params.filtertostructures = "0" // 1 means we filter to only hits with structures
