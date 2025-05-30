@@ -215,7 +215,7 @@ parameterlist:
           - key: searchtool
             value: blink
 
-    - displayname: forceoffline
+    - displayname: Force Offline Annotations (speeds up workflow)
       paramtype: select
       nf_paramname: forceoffline
       formvalue: "No"
