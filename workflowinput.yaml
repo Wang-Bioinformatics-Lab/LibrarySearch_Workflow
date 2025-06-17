@@ -64,6 +64,42 @@ parameterlist:
           - key: searchtool
             value: gnps_indexed
 
+    - displayname: Filter Precursor
+      paramtype: select
+      nf_paramname: filter_precursor
+      formvalue: "1"
+      options:
+        - value: "0"
+          display: "No"
+        - value: "1"
+          display: "Yes"
+      tooltip: "filter precursor peaks and peaks around precursor m/z"
+      showif:
+        - condition:
+          - key: searchtool
+            value: gnps
+        - condition:
+          - key: searchtool
+            value: gnps_indexed
+
+    - displayname: Filter noise
+      paramtype: select
+      nf_paramname: filter_window
+      formvalue: "1"
+      options:
+        - value: "0"
+          display: "No"
+        - value: "1"
+          display: "Yes"
+      tooltip: "filter noise peaks and peaks around precursor m/z"
+      showif:
+        - condition:
+          - key: searchtool
+            value: gnps
+        - condition:
+          - key: searchtool
+            value: gnps_indexed
+
     - displayname: Fragment Ion Tolerance
       paramtype: text
       nf_paramname: fragment_tolerance

@@ -91,11 +91,15 @@ workflow Main{
 
         if (input_map.searchtool == "gnps_indexed") {
             // If the search tool is gnps_indexed, we need to use the indexed search
-            search_results = searchDataGNPSIndexed(inputs, input_map.pm_tolerance, input_map.fragment_tolerance, input_map.topk, input_map.library_min_similarity, input_map.library_min_matched_peaks, input_map.analog_search)
+            search_results = searchDataGNPSIndexed(inputs, input_map.pm_tolerance, input_map.fragment_tolerance,
+             input_map.topk, input_map.library_min_similarity, input_map.library_min_matched_peaks,
+              input_map.analog_search, input_map.filter_precursor, input_map.filter_window)
         }
         else {
             // Otherwise, we use the regular GNPS search
-            search_results = searchDataGNPS(inputs, input_map.pm_tolerance, input_map.fragment_tolerance, input_map.topk, input_map.library_min_similarity, input_map.library_min_matched_peaks, input_map.analog_search)
+            search_results = searchDataGNPS(inputs, input_map.pm_tolerance, input_map.fragment_tolerance,
+             input_map.topk, input_map.library_min_similarity, input_map.library_min_matched_peaks,
+              input_map.analog_search, input_map.filter_precursor, input_map.filter_window)
         }
 
         chunked_results = chunkResults(search_results.buffer(size: input_map.merge_batch_size, remainder: true), input_map.topk)
@@ -155,7 +159,9 @@ workflow {
         publishDir: params.publishDir,
         search_algorithm: params.search_algorithm,
         peak_transformation: params.peak_transformation,
-        unmatched_penalty_factor: params.unmatched_penalty_factor
+        unmatched_penalty_factor: params.unmatched_penalty_factor,
+        filter_precursor: params.filter_precursor,
+        filter_window: params.filter_window
     ]
     
     Main(input_map)
