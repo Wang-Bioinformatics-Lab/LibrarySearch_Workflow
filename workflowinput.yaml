@@ -36,7 +36,7 @@ parameterlist:
     - displayname: Search Tool
       paramtype: select
       nf_paramname: searchtool
-      formvalue: gnps
+      formvalue: gnps_indexed
       options:
         - value: gnps
           display: gnps
@@ -51,7 +51,7 @@ parameterlist:
       paramtype: text
       nf_paramname: pm_tolerance
       formplaceholder: Enter the pm_tolerance
-      formvalue: "2.0"
+      formvalue: "0.05"
       tooltip: "pm_tolerance"
       showif:
         - condition:
@@ -65,7 +65,7 @@ parameterlist:
       paramtype: text
       nf_paramname: fragment_tolerance
       formplaceholder: Enter the fragment_tolerance
-      formvalue: "0.5"
+      formvalue: "0.05"
       tooltip: "fragment_tolerance"
       
 
