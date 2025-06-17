@@ -246,7 +246,7 @@ parameterlist:
 
     - displayname: Precursor Filtering
       paramtype: select
-      nf_paramname: precursorfiltering
+      nf_paramname: filter_precursor
       formvalue: "1"
       options:
         - value: "0"
@@ -260,7 +260,7 @@ parameterlist:
 
     - displayname: Window Filtering
       paramtype: select
-      nf_paramname: windowfiltering
+      nf_paramname: filter_window
       formvalue: "1"
       options:
         - value: "0"
