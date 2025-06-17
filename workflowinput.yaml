@@ -236,6 +236,41 @@ parameterlist:
           display: "Yes"
         - value: "No"
           display: "No"
+
+    - displayname: Filtering Parameters
+      paramtype: section
+      showif:
+        - condition:
+          - key: searchtool
+            value: gnps_indexed
+
+    - displayname: Precursor Filtering
+      paramtype: select
+      nf_paramname: precursorfiltering
+      formvalue: "1"
+      options:
+        - value: "0"
+          display: "No"
+        - value: "1"
+          display: "Yes"
+      showif:
+        - condition:
+          - key: searchtool
+            value: gnps_indexed
+
+    - displayname: Window Filtering
+      paramtype: select
+      nf_paramname: windowfiltering
+      formvalue: "1"
+      options:
+        - value: "0"
+          display: "No"
+        - value: "1"
+          display: "Yes"
+      showif:
+        - condition:
+          - key: searchtool
+            value: gnps_indexed
     
 
     
