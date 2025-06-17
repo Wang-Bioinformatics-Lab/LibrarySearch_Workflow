@@ -82,7 +82,7 @@ parameterlist:
           - key: searchtool
             value: gnps_indexed
 
-    - displayname: Filter noise
+    - displayname: Window Filter
       paramtype: select
       nf_paramname: filter_window
       formvalue: "1"
@@ -91,7 +91,7 @@ parameterlist:
           display: "No"
         - value: "1"
           display: "Yes"
-      tooltip: "filter noise peaks and peaks around precursor m/z"
+      tooltip: "If `Yes`, for each peak, it will check a window around that peak, if it is not one of the top peaks in terms of intensity in that window, it will be filtered out. This will speed up the search and reduce the effect of noise."
       showif:
         - condition:
           - key: searchtool
