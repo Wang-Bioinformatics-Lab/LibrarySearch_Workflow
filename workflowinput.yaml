@@ -60,6 +60,9 @@ parameterlist:
         - condition:
           - key: searchtool
             value: gnps_new
+        - condition:
+          - key: searchtool
+            value: gnps_indexed
 
     - displayname: Fragment Ion Tolerance
       paramtype: text
@@ -81,6 +84,9 @@ parameterlist:
         - condition:
           - key: searchtool
             value: gnps_new
+        - condition:
+          - key: searchtool
+            value: gnps_indexed
 
     - displayname: Library Minimum Matched Peaks
       paramtype: text
@@ -94,6 +100,9 @@ parameterlist:
         - condition:
           - key: searchtool
             value: gnps_new
+        - condition:
+          - key: searchtool
+            value: gnps_indexed
 
     # Analog Search
     - displayname: Analog Search
@@ -112,7 +121,10 @@ parameterlist:
         - condition:
           - key: searchtool
             value: gnps_new
-
+        - condition:
+          - key: searchtool
+            value: gnps_indexed
+    
     - displayname: Top-K
       paramtype: text
       nf_paramname: topk
