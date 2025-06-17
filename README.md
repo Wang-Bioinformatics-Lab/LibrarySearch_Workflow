@@ -1,4 +1,11 @@
-# Nextflow Template
+# Library Search Workflow
+
+Getting the data to run
+
+```
+cd data
+sh ./get_data.sh
+```
 
 To run the workflow to test simply do
 
@@ -6,9 +13,8 @@ To run the workflow to test simply do
 make run
 ```
 
-To learn NextFlow checkout this documentation:
+We recommend nextflow 24.10 to run. 
 
-https://www.nextflow.io/docs/latest/index.html
 
 ## Installation
 
