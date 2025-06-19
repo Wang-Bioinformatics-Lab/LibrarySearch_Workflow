@@ -1,7 +1,7 @@
 workflowname: librarysearch_workflow
 workflowdescription: librarysearch_workflow
 workflowlongdescription: This is a library search workflow for GNPS2. GNPS Indexed is the default now that should have the same performance as before but significantly faster. Additionally - the filtering of queries and library is on by default for precursor filtering and window filtering. 
-workflowversion: "2025.06.17"
+workflowversion: "2025.06.19"
 workflowfile: nf_workflow.nf
 workflowautohide: false
 adminonly: false
