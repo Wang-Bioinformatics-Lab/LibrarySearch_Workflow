@@ -40,13 +40,27 @@ params.unmatched_penalty_factor = 0.6
 params.blink_ionization = "positive"
 params.blink_minpredict = 0.01
 
+params.publishdir = "$launchDir"
 TOOL_FOLDER = "$moduleDir/bin"
 MODULES_FOLDER = "$TOOL_FOLDER/NextflowModules"
-params.publishDir = "./nf_output"
+
+
+// COMPATIBILITY NOTE: The following might be necessary if this workflow is being deployed in a slightly different environemnt
+// checking if outdir is defined,
+// if so, then set publishdir to outdir
+if (params.outdir) {
+    _publishdir = params.outdir
+}
+else{
+    _publishdir = params.publishdir
+}
+
+// Augmenting with nf_output
+_publishdir = "${_publishdir}/nf_output"
 
 include {summaryLibrary; searchDataGNPS; searchDataGNPSNew; searchDataGNPSIndexed; searchDataBlink; 
  mergeResults; librarygetGNPSAnnotations; filtertop1Annotations;
-  formatBlinkResults; chunkResults} from "$MODULES_FOLDER/nf_library_search_modules.nf" addParams(publishDir: params.publishDir)
+  formatBlinkResults; chunkResults} from "$MODULES_FOLDER/nf_library_search_modules.nf" addParams(publishdir: _publishdir)
 
 workflow Main{
     take:
@@ -79,7 +93,7 @@ workflow Main{
     library_summary_ch = summaryLibrary(libraries_ch)
 
     // Merging all these tsv files from library_summary_ch within nextflow
-    library_summary_merged_ch = library_summary_ch.collectFile(name: "${input_map.publishDir}/library_summary.tsv", keepHeader: true)
+    library_summary_merged_ch = library_summary_ch.collectFile(name: "${input_map.publishdir}/library_summary.tsv", keepHeader: true)
     
     if(input_map.searchtool == "gnps" || input_map.searchtool == "gnps_indexed"){
         // Perform cartesian product producing all combinations of library, spectra
@@ -156,7 +170,7 @@ workflow {
         analog_max_shift: params.analog_max_shift,
         blink_ionization: params.blink_ionization,
         blink_minpredict: params.blink_minpredict,
-        publishDir: params.publishDir,
+        publishdir: params.publishdir,
         search_algorithm: params.search_algorithm,
         peak_transformation: params.peak_transformation,
         unmatched_penalty_factor: params.unmatched_penalty_factor,
