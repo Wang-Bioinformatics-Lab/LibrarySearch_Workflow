@@ -32,10 +32,19 @@ Views:
                 data: SpectrumID
             -   title: "Smiles"
                 data: Smiles
+            -   title: "Library Name"
+                data: LibraryName
+            -   title: "Library Scan"
+                data: LibScan
         columnDefs: '[ 
             {"targets": 0,"data": null,"render": function ( data, type, row, meta ) {
+        if (row["SpectrumID"] && row["SpectrumID"].includes("CCMSLIB")) {
+            return `
+                <a target="_blank" href="https://metabolomics-usi.gnps2.org/dashinterface/?usi1=mzspec:GNPS2:TASK-${task}-inputspectra/${row["SpectrumFile"]}:scan:${row["#Scan#"]}&usi2=mzspec:GNPS:GNPS-LIBRARY:accession:${row["SpectrumID"]}">View Mirror</a>
+            `;
+        }
         return `
-            <a target="_blank" href="https://metabolomics-usi.gnps2.org/dashinterface/?usi1=mzspec:GNPS2:TASK-${task}-inputspectra/${row["SpectrumFile"]}:scan:${row["#Scan#"]}&usi2=mzspec:GNPS:GNPS-LIBRARY:accession:${row["SpectrumID"]}">View Mirror</a>
+            <a target="_blank" href="https://metabolomics-usi.gnps2.org/dashinterface/?usi1=mzspec:GNPS2:TASK-${task}-inputspectra/${row["SpectrumFile"]}:scan:${row["#Scan#"]}&usi2=mzspec:GNPS2:TASK-${task}-input_libraries/${row["LibraryName"]}:scan:${row["LibScan"]}">View Mirror</a>
         `;}},
         {
             "targets": 1, "data": null, "render": function ( data, type, row, meta ) {
@@ -45,7 +54,7 @@ Views:
         return `
             <img src="https://structure.gnps2.org/structureimg?smiles=${row["Smiles"]}"/>
         `;}},
-        ]'
+        {"targets": [10, 11], "visible": false}]'
 
 
 -   name: Search Results Top 1 List

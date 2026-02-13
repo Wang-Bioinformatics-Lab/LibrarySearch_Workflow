@@ -58,9 +58,12 @@ else{
 // Augmenting with nf_output
 _publishdir = "${_publishdir}/nf_output"
 
-include {summaryLibrary; searchDataGNPS; searchDataGNPSNew; searchDataGNPSIndexed; searchDataBlink; 
+include {searchDataGNPS; searchDataGNPSNew; searchDataGNPSIndexed; searchDataBlink; 
  mergeResults; librarygetGNPSAnnotations; filtertop1Annotations;
   formatBlinkResults; chunkResults} from "$MODULES_FOLDER/nf_library_search_modules.nf" addParams(publishdir: _publishdir)
+
+include {summaryLibrary} from "$MODULES_FOLDER/nf_library_search_modules.nf"
+
 
 workflow Main{
     take:
