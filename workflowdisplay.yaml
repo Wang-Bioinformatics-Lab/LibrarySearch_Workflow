@@ -50,6 +50,14 @@ Views:
             "targets": 1, "data": null, "render": function ( data, type, row, meta ) {
                 return row["Smiles"]? `<a target="_blank" href="https://modifinder.gnps2.org/?USI1=mzspec:GNPS:GNPS-LIBRARY:accession:${row["SpectrumID"]}&USI2=mzspec:GNPS2:TASK-${task}-inputspectra/${row["SpectrumFile"]}:scan:${row["#Scan#"]}&SMILES1=${row["Smiles"]}">Check on ModiFinder</a>` : `<p>Unknown Structure</p>`;
             }},
+        {"targets": 4,"data": null,"render": function ( data, type, row, meta ) {
+        var name = row["Compound_Name"] || "";
+        var match = name.match(/LMFA\d{8}/);
+        if (match) {
+            return `<a target="_blank" href="https://fileserver.wanglab.science/ming/librarylinkout/library_linkout.html?accession=${match[0]}">${name}</a>`;
+        }
+        return name;
+        }},
         {"targets": 11,"data": null,"render": function ( data, type, row, meta ) {
         return `
             <img src="https://structure.gnps2.org/structureimg?smiles=${row["Smiles"]}"/>
@@ -97,6 +105,14 @@ Views:
             "targets": 1, "data": null, "render": function ( data, type, row, meta ) {
                 return row["Smiles"]? `<a target="_blank" href="https://modifinder.gnps2.org/?USI1=mzspec:GNPS:GNPS-LIBRARY:accession:${row["SpectrumID"]}&USI2=mzspec:GNPS2:TASK-${task}-inputspectra/${row["SpectrumFile"]}:scan:${row["#Scan#"]}&SMILES1=${row["Smiles"]}">Check on ModiFinder</a>` : `<p>Unknown Structure</p>`;
             }},
+        {"targets": 4,"data": null,"render": function ( data, type, row, meta ) {
+        var name = row["Compound_Name"] || "";
+        var match = name.match(/LMFA\d{8}/);
+        if (match) {
+            return `<a target="_blank" href="https://fileserver.wanglab.science/ming/librarylinkout/library_linkout.html?accession=${match[0]}">${name}</a>`;
+        }
+        return name;
+        }},
         {"targets": 11,"data": null,"render": function ( data, type, row, meta ) {
         return `
             <img src="https://structure.gnps2.org/structureimg?smiles=${row["Smiles"]}"/>
